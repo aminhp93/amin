@@ -5,7 +5,7 @@
 class Config(object):
     DEBUG = False
     TESTING = False
-    SECRET_KEY = 'someSecretKey12'
+    SECRET_KEY = 'someSecretKey'
 
 """ Put Development Specific Configurations here """
 class DevelopmentConfig(Config):
