@@ -17,15 +17,41 @@ from system.core.router import routes
     The automatically generated routes respond to all of the http verbs (GET, POST, PUT, PATCH, DELETE)
 """
 routes['default_controller'] = 'Users'
-routes['POST']['/add_user'] = 'Users#add_user'
-routes['GET']['/books'] = 'Users#show_books'
+routes['GET']['/signin'] = 'Users#signin'
+
+routes['GET']['/dashboard/admin'] = 'Users#admin_show'
+routes['POST']['/users/admin_add'] = 'Users#admin_add'
+routes['GET']['/users/new'] = 'Users#new'
+routes['GET']['/users/edit/<int:id>'] = 'Users#admin_edit'
+routes['POST']['/admin/update1/<int:id>'] = "Users#admin_update_1"
+routes['POST']['/admin/update2/<int:id>'] = "Users#admin_update_2"
+routes['POST']['/admin/update3/<int:id>'] = "Users#admin_update_3"
+routes['POST']['/users/delete/<int:id>'] = 'Users#delete'
+
+routes['GET']['/register'] = 'Users#register'
+routes['POST']['/users/add'] = 'Users#add'
+routes['GET']['/dashboard'] = 'Users#user_show'
+routes['GET']['/users/profile/<int:id>'] = 'Users#profile'
+routes['GET']['/users/edit'] = 'Users#user_edit'
+routes['POST']['/users/update1'] = "Users#user_update_1"
+routes['POST']['/users/update2'] = "Users#user_update_2"
+routes['POST']['/users/update3'] = "Users#user_update_3"
+
 routes['POST']['/login'] = 'Users#login'
-routes['GET']['/books/add'] = 'Books#add_book'
-routes['POST']['/insert_book/temp'] = 'Books#insert_book'
-routes['GET']['/books/<int:id>'] = 'Books#show_one_book'
-routes['GET']['/users/<int:id>'] = 'Users#show_user'
-routes['POST']['/insert_review/<int:id>'] = 'Users#insert_review'
+routes['GET']['/users/show/<int:id>'] = 'Users#show'
+routes['POST']['/messages/add/<int:id>'] = 'Messages#add'
+routes['POST']['/comments/add/<int:id>'] = 'Comments#add'
+
+routes['POST']['/add_friend/<int:id>'] = 'Requests#add_friend'
+routes['POST']['/confirm_friend/<int:id>'] = 'Requests#confirm_friend'
+routes['POST']['/delete_friend/<int:id>'] = 'Requests#delete_friend'
+
+routes['GET']['/message_friend/<int:friend_id>'] = 'Message_friends#message_friend'
+routes['POST']['/insert_message_friend/<int:id>'] = "Message_friends#insert_message_friend"
+
 routes['GET']['/logout'] = 'Users#logout'
+
+
 """
     You can add routes and specify their handlers as follows:
 

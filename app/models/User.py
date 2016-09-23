@@ -14,34 +14,13 @@ import re
 class User(Model):
     def __init__(self):
         super(User, self).__init__()
-    """
-    Below is an example of a model method that queries the database for all users in a fictitious application
-    
-    Every model has access to the "self.db.query_db" method which allows you to interact with the database
 
-    def get_users(self):
-        query = "SELECT * from users"
+    def get_all_users(self):
+        query = "SELECT * FROM users"
         return self.db.query_db(query)
 
-    def get_user(self):
-        query = "SELECT * from users where id = :id"
-        data = {'id': 1}
-        return self.db.get_one(query, data)
-
-    def add_message(self):
-        sql = "INSERT into messages (message, created_at, users_id) values(:message, NOW(), :users_id)"
-        data = {'message': 'awesome bro', 'users_id': 1}
-        self.db.query_db(sql, data)
-        return True
-    
-    def grab_messages(self):
-        query = "SELECT * from messages where users_id = :user_id"
-        data = {'user_id':1}
-        return self.db.query_db(query, data)
-
-    """
     def get_user_by_id(self, id):
-        query = "SELECT * from users where id = :id"
+        query = "SELECT * FROM users WHERE id = :id"
         data = {'id': id}
         return self.db.query_db(query, data)
 
@@ -49,12 +28,19 @@ class User(Model):
         EMAIL_REGEX = re.compile(r'^[a-za-z0-9\.\+_-]+@[a-za-z0-9\._-]+\.[a-za-z]*$')
         errors = 0
         # Some basic validation
-        if not user['name']:
+        if not user['first_name']:
             errors += 1
-            flash('Name cannot be blank', 'name')
-        elif len(user['name']) < 2:
+            flash('Name cannot be blank', 'first_name')
+        elif len(user['first_name']) < 2:
             errors += 1
-            flash('Name must be at least 2 characters long', 'name')
+            flash('Name must be at least 2 characters long', 'first_name')
+
+        if not user['last_name']:
+            errors += 1
+            flash('Name cannot be blank', 'last_name')
+        elif len(user['last_name']) < 2:
+            errors += 1
+            flash('Name must be at least 2 characters long', 'last_name')
 
         if not user['email']:
             errors += 1
@@ -79,50 +65,52 @@ class User(Model):
         else:
             flash('You successfully registerd. Please log in.', 'login_success')
             password = user['password']
-
             pw_hash = self.bcrypt.generate_password_hash(password)
-
-            query = "INSERT into users (name, alias, email, password, created_at) values(:name, :alias, :email, :password, NOW())"
-            data = {'name': user['name'], 'alias': user['alias'], 'email': user['email'], 'password': pw_hash}
+            query = "INSERT INTO users (email, first_name, last_name, pw_hash, created_at) VALUES (:email, :first_name, :last_name, :password, NOW())"
+            data = {'email': user['email'], 'first_name': user['first_name'], 'last_name': user['last_name'], 'password': pw_hash}
             return self.db.query_db(query, data)
 
-    def login(self, user):
+    def check_admin_or_user(self, user):
         if not user['email'] or not user['password']:
             flash('Invalid input', 'login')
             return False
 
-        query = 'SELECT * FROM users WHERE email = :email LIMIT 1'
+        password = user['password']
+        query = "SELECT * FROM users WHERE email = :email"
         data = {'email': user['email']}
-        result = self.db.query_db(query, data)
+        test = self.db.query_db(query, data)
 
-        if result:
-            if self.bcrypt.check_password_hash(result[0]['password'], user['password']):
-                return result[0]['id']
+        if test:
+            if self.bcrypt.check_password_hash(test[0]['pw_hash'], user['password']):
+                return test[0]
             else:
-                flash('Invalid password', 'login')
+                flash('Password is not match', 'login')
                 return False
         return False
 
-    def get_book_by_user_id(self, id):
-        query = "SELECT books.created_at, books.id as book_id, books.user_id, users.alias, users.name, users.email, books.title FROM users LEFT JOIN books ON users.id = books.user_id WHERE users.id = :id"
-        data = {'id': id}
+    def user_update_1(self, user):
+        query = 'UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email, level = :level WHERE id = :id'
+        data = {'id': user['id'], 'email': user['email'], 'first_name': user['first_name'], 'last_name': user['last_name'], 'level': user['level']}
         return self.db.query_db(query, data)
 
-    def get_review_by_user_id(self, id):
-        query = "SELECT users.email, users.alias, users.name, books.title, reviews.book_id FROM users LEFT JOIN reviews ON users.id = reviews.user_id LEFT JOIN books ON reviews.book_id = books.id WHERE users.id = :id GROUP BY books.title"
-        data = {'id': id}
+    def user_update_2(self, user):
+        if user['password'] != user['password_confirmation']:
+            return False
+
+        pw_hash = self.bcrypt.generate_password_hash(user['password'])
+        query = 'UPDATE users SET pw_hash = :password WHERE id = :id'
+        data = {'id': user['id'], 'password': pw_hash}
         return self.db.query_db(query, data)
 
+    def user_update_3(self, user):
 
+        query = 'UPDATE users SET description = :description WHERE id = :id'
+        data = {'id': user['id'], 'description': user['description']}
+        return self.db.query_db(query, data)
 
-
-
-
-
-
-
-
-
-
+    def delete_user(self, id):
+        query = "DELETE FROM users WHERE id = :id"
+        data = {'id': id}
+        return self.db.query_db(query, data)
 
 
