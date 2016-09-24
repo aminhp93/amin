@@ -40,6 +40,7 @@ class User(Model):
         return self.db.query_db(query, data)
 
     """
+
     def get_user_by_id(self, id):
         query = "SELECT * from users where id = :id"
         data = {'id': id}
@@ -47,14 +48,22 @@ class User(Model):
 
     def add_user(self, user):
         EMAIL_REGEX = re.compile(r'^[a-za-z0-9\.\+_-]+@[a-za-z0-9\._-]+\.[a-za-z]*$')
+        DOB = re.compile(r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]|(?:Jan|Mar|May|Jul|Aug|Oct|Dec)))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2]|(?:Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)(?:0?2|(?:Feb))\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9]|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep))|(?:1[0-2]|(?:Oct|Nov|Dec)))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$')
         errors = 0
         # Some basic validation
-        if not user['name']:
+        if not user['first_name']:
             errors += 1
-            flash('Name cannot be blank', 'name')
-        elif len(user['name']) < 2:
+            flash('First name cannot be blank', 'first_name')
+        elif len(user['first_name']) < 2:
             errors += 1
-            flash('Name must be at least 2 characters long', 'name')
+            flash('First name must be at least 2 characters long', 'first_name')
+
+        if not user['alias']:
+            errors += 1
+            flash('Name cannot be blank', 'alias')
+        elif len(user['alias']) < 2:
+            errors += 1
+            flash('Alias must be at least 2 characters long', 'alias')
 
         if not user['email']:
             errors += 1
@@ -82,8 +91,8 @@ class User(Model):
 
             pw_hash = self.bcrypt.generate_password_hash(password)
 
-            query = "INSERT into users (name, alias, email, password, created_at) values(:name, :alias, :email, :password, NOW())"
-            data = {'name': user['name'], 'alias': user['alias'], 'email': user['email'], 'password': pw_hash}
+            query = "INSERT into users (first_name, alias, email, password, created_at) values(:first_name, :alias, :email, :password, NOW())"
+            data = {'first_name': user['first_name'], 'alias': user['alias'], 'email': user['email'], 'password': pw_hash}
             return self.db.query_db(query, data)
 
     def login(self, user):
@@ -103,26 +112,11 @@ class User(Model):
                 return False
         return False
 
-    def get_book_by_user_id(self, id):
-        query = "SELECT books.created_at, books.id as book_id, books.user_id, users.alias, users.name, users.email, books.title FROM users LEFT JOIN books ON users.id = books.user_id WHERE users.id = :id"
-        data = {'id': id}
-        return self.db.query_db(query, data)
-
-    def get_review_by_user_id(self, id):
-        query = "SELECT users.email, users.alias, users.name, books.title, reviews.book_id FROM users LEFT JOIN reviews ON users.id = reviews.user_id LEFT JOIN books ON reviews.book_id = books.id WHERE users.id = :id GROUP BY books.title"
-        data = {'id': id}
-        return self.db.query_db(query, data)
-
-
-
-
-
-
-
-
-
-
-
+    def get_all_users_with_poke(self, user):
+        query = "SELECT users.id, users.first_name, users.alias, users.email, pokes2.number as user_pokes, pokes3.number as friend_pokes FROM users LEFT JOIN (SELECT * FROM pokes WHERE pokes.user_id = :id) as pokes2 ON users.id = pokes2.friend_id LEFT JOIN (SELECT * FROM pokes WHERE pokes.friend_id = :id) as pokes3 ON users.id = pokes3.user_id WHERE users.id != :id"
+        data = {'id': user['id']}
+        result = self.db.query_db(query, data)
+        return result
 
 
 

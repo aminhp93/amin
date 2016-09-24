@@ -18,14 +18,13 @@ from system.core.router import routes
 """
 routes['default_controller'] = 'Users'
 routes['POST']['/add_user'] = 'Users#add_user'
-routes['GET']['/books'] = 'Users#show_books'
 routes['POST']['/login'] = 'Users#login'
-routes['GET']['/books/add'] = 'Books#add_book'
-routes['POST']['/insert_book/temp'] = 'Books#insert_book'
-routes['GET']['/books/<int:id>'] = 'Books#show_one_book'
-routes['GET']['/users/<int:id>'] = 'Users#show_user'
-routes['POST']['/insert_review/<int:id>'] = 'Users#insert_review'
+routes['GET']['/success'] = 'Users#success'
 routes['GET']['/logout'] = 'Users#logout'
+
+routes['POST']['/insert_poke/<int:id>'] = 'Pokes#insert_poke'
+
+
 """
     You can add routes and specify their handlers as follows:
 

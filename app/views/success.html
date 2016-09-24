@@ -1,0 +1,52 @@
+{% include "_head.html" %}
+
+	<title>Success</title>
+</head>
+<body>
+
+{% include "_nav.html" %}
+
+	<h2>The number who poked you</h2>
+	{% for user in users %}
+		{% if user['friend_pokes'] == None %}
+			<div></div>
+		{% else %}
+			<li>{{user['first_name']}} pokes you {{user['friend_pokes']}}</li>
+		{% endif %}
+	{% endfor %}
+
+	<table class="table table-hover">
+		<tr>
+			<th>First Name</th>
+			<th>Alias</th>
+			<th>Email Address</th>
+			<th>Poke History</th>
+			<th>Action</th>
+		</tr>
+		{% for user in users %}
+		<tr>
+			<td>{{ user['first_name'] }}</td>
+			<td>{{ user['alias'] }}</td>
+			<td>{{ user['email'] }}</td>
+			{% if user['user_pokes'] == None %}
+				<td>0</td>
+				<td>
+					<form action="/insert_poke/{{ user['id'] }}" method="post">
+						<input type="hidden" name="number" value="0">
+						<input type="submit" value="poke">
+					</form>
+				</td>
+			{% else %}
+				<td>{{ user['user_pokes'] }}</td>
+				<td>
+					<form action="/insert_poke/{{ user['id'] }}" method="post">
+						<input type="hidden" name="number" value="{{user['user_pokes']}}">
+						<input type="submit" value="poke">
+					</form>
+				</td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+	</table>
+
+{% include "_end.html" %}

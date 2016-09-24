@@ -9,10 +9,11 @@
 """
 from system.core.model import Model
 from flask import flash
+import re
 
-class Review(Model):
+class Poke(Model):
     def __init__(self):
-        super(Review, self).__init__()
+        super(Poke, self).__init__()
     """
     Below is an example of a model method that queries the database for all users in a fictitious application
     
@@ -40,19 +41,19 @@ class Review(Model):
 
     """
 
-    def insert_review(self, review):
-        if not review['review']:
-            return False
+    def insert_poke(self, poke):
+        data = {'user_id': poke['user_id'], 'friend_id': poke['friend_id'], 'number': poke['number']}
+        query = "SELECT * FROM pokes WHERE user_id = :user_id AND friend_id = :friend_id"
+        result = self.db.query_db(query, data)
 
-        query = 'INSERT Into reviews(rating, review, user_id, book_id, created_at) VALUES (:rating, :review, :user_id, :book_id, NOW())'
-        data = {'rating': review['rating'], 'review': review['review'], 'user_id': review['user_id'], 'book_id': review['book_id']}
-        review_id = self.db.query_db(query, data)
-        return review_id
+        if result: 
+            query = "UPDATE pokes SET number = :number WHERE user_id = :user_id AND friend_id = :friend_id"
+            self.db.query_db(query, data)
+            return True
 
-
-
-
-
+        query = "INSERT into pokes(user_id, friend_id, number) VALUES (:user_id, :friend_id, :number)"
+        self.db.query_db(query, data)
+        return True
 
 
 

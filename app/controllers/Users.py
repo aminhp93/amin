@@ -16,8 +16,6 @@ class Users(Controller):
             Every controller has access to the load_model method.
         """
         self.load_model('User')
-        self.load_model('Book')
-        self.load_model('Review')
         self.db = self._app.db
 
         """
@@ -44,19 +42,19 @@ class Users(Controller):
 
     def add_user(self):
         post = request.form
-        name = post['name']
+        first_name = post['first_name']
         alias = post['alias']
         email = post['email']
         password = post['password']
         password_cf = post['password_confirmation']
 
-        user = {'name': name, 'alias': alias, 'email': email, 'password': password, 'password_confirmation': password_cf}
+        user = {'first_name': first_name, 'alias': alias, 'email': email, 'password': password, 'password_confirmation': password_cf}
         result = self.models['User'].add_user(user)
         if result == False:
             return redirect('/')
 
         session['id'] = result
-        return redirect('/books')
+        return redirect('/success')
 
     def login(self):
         post = request.form
@@ -68,39 +66,16 @@ class Users(Controller):
         if result == False:
             return redirect('/')
         session['id'] = result
-        return redirect('/books')
+        return redirect('/success')
 
-    def show_books(self):
-        user = self.models['User'].get_user_by_id(session['id'])
-        all_books = self.models['Book'].get_all_books()        
-        books = self.models['User'].get_book_by_user_id(session['id'])
-        return self.load_view('book_show.html', books = books, user = user[0], all_books = all_books)
-
-    def insert_review(self, id):
-        print 'amin'
-        post = request.form
-        review = post['review']
-        rating = post['rating']
-
-        book = {'review': review, 'rating': rating, 'user_id': session['id'], 'book_id': id}
-        self.models['Review'].insert_review(book)
-        return redirect('/books/' + str(id))
-
-
-    def show_user(self, id):
-        books = self.models['User'].get_review_by_user_id(id)
-        length = len(books)
-        return self.load_view('user_show.html', books = books, length = length)
+    def success(self):
+        user = {'id': session['id']}
+        users = self.models['User'].get_all_users_with_poke(user)
+        return self.load_view('success.html', users = users)
 
     def logout(self):
         session.pop('id')
         return redirect('/')
-
-
-
-
-
-
 
 
 
