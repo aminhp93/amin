@@ -28,7 +28,7 @@ class Pokes(Controller):
         number = str(int(request.form['number']) + 1)
         poke = {'user_id': session['id'], 'friend_id': id, 'number': number}
         self.models['Poke'].insert_poke(poke)
-        return redirect('/success')
+        return redirect('/pokes')
 
 
 
