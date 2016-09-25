@@ -42,13 +42,14 @@ class Users(Controller):
 
     def add_user(self):
         post = request.form
-        first_name = post['first_name']
+        name = post['name']
         alias = post['alias']
         email = post['email']
         password = post['password']
         password_cf = post['password_confirmation']
+        date_of_birth = post['date_of_birth']
 
-        user = {'first_name': first_name, 'alias': alias, 'email': email, 'password': password, 'password_confirmation': password_cf}
+        user = {'name': name, 'alias': alias, 'email': email, 'password': password, 'password_confirmation': password_cf, 'date_of_birth': date_of_birth}
         result = self.models['User'].add_user(user)
         if result == False:
             return redirect('/')
@@ -71,7 +72,9 @@ class Users(Controller):
     def success(self):
         user = {'id': session['id']}
         users = self.models['User'].get_all_users_with_poke(user)
-        return self.load_view('success.html', users = users)
+        owner = self.models['User'].get_user_by_id(session['id'])
+        count = self.models['User'].count_poked_friend(session['id'])
+        return self.load_view('success.html', users = users, owner = owner[0], count = count)
 
     def logout(self):
         session.pop('id')

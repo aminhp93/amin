@@ -48,19 +48,26 @@ class User(Model):
 
     def add_user(self, user):
         EMAIL_REGEX = re.compile(r'^[a-za-z0-9\.\+_-]+@[a-za-z0-9\._-]+\.[a-za-z]*$')
-        DOB = re.compile(r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]|(?:Jan|Mar|May|Jul|Aug|Oct|Dec)))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2]|(?:Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)(?:0?2|(?:Feb))\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9]|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep))|(?:1[0-2]|(?:Oct|Nov|Dec)))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$')
+        DOB = re.compile(r'^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$')
         errors = 0
         # Some basic validation
-        if not user['first_name']:
+        if not user['name']:
             errors += 1
-            flash('First name cannot be blank', 'first_name')
-        elif len(user['first_name']) < 2:
+            flash('Name cannot be blank', 'name')
+        elif len(user['name']) < 2:
             errors += 1
-            flash('First name must be at least 2 characters long', 'first_name')
+            flash('Name must be at least 2 characters long', 'name')
+
+        query = "SELECT * FROM users WHERE name = :name"
+        data = {'name': user['name']}
+        test_name = self.db.query_db(query, data)
+        if len(test_name) != 0:
+            errors += 1
+            flash('This name has been used', 'name')
 
         if not user['alias']:
             errors += 1
-            flash('Name cannot be blank', 'alias')
+            flash('Alias cannot be blank', 'alias')
         elif len(user['alias']) < 2:
             errors += 1
             flash('Alias must be at least 2 characters long', 'alias')
@@ -72,6 +79,13 @@ class User(Model):
             errors += 1
             flash('Email format must be valid!', 'email')
 
+        query = "SELECT * FROM users WHERE email = :email"
+        data = {'email': user['email']}
+        test_email = self.db.query_db(query, data)
+        if len(test_email) != 0:
+            errors += 1
+            flash('This email has been used', 'email')
+
         if not user['password']:
             errors += 1
             flash('Password cannot be blank', 'password')
@@ -82,6 +96,13 @@ class User(Model):
             errors += 1
             flash('Password and confirmation must match!', 'password')
 
+        if not user['date_of_birth']:
+            errors += 1
+            flash('Date of birth cannot be blank', 'date_of_birth')
+        elif not DOB.match(user['date_of_birth']):
+            errors += 1
+            flash('Your date of birth is not valid', 'date_of_birth')
+
         # If we hit errors, return them, else return True.
         if errors > 0:
             return False
@@ -91,8 +112,8 @@ class User(Model):
 
             pw_hash = self.bcrypt.generate_password_hash(password)
 
-            query = "INSERT into users (first_name, alias, email, password, created_at) values(:first_name, :alias, :email, :password, NOW())"
-            data = {'first_name': user['first_name'], 'alias': user['alias'], 'email': user['email'], 'password': pw_hash}
+            query = "INSERT into users (name, alias, email, password, date_of_birth, created_at) values(:name, :alias, :email, :password, :date_of_birth, NOW())"
+            data = {'name': user['name'], 'alias': user['alias'], 'email': user['email'], 'password': pw_hash, 'date_of_birth': user['date_of_birth']}
             return self.db.query_db(query, data)
 
     def login(self, user):
@@ -113,8 +134,14 @@ class User(Model):
         return False
 
     def get_all_users_with_poke(self, user):
-        query = "SELECT users.id, users.first_name, users.alias, users.email, pokes2.number as user_pokes, pokes3.number as friend_pokes FROM users LEFT JOIN (SELECT * FROM pokes WHERE pokes.user_id = :id) as pokes2 ON users.id = pokes2.friend_id LEFT JOIN (SELECT * FROM pokes WHERE pokes.friend_id = :id) as pokes3 ON users.id = pokes3.user_id WHERE users.id != :id"
+        query = "SELECT users.id, users.name, users.alias, users.email, pokes2.number as user_pokes, pokes3.number as friend_pokes FROM users LEFT JOIN (SELECT * FROM pokes WHERE pokes.user_id = :id) as pokes2 ON users.id = pokes2.friend_id LEFT JOIN (SELECT * FROM pokes WHERE pokes.friend_id = :id) as pokes3 ON users.id = pokes3.user_id WHERE users.id != :id ORDER BY user_pokes DESC"
         data = {'id': user['id']}
+        result = self.db.query_db(query, data)
+        return result
+
+    def count_poked_friend(self, id):
+        query = "SELECT COUNT(*) as count FROM pokes WHERE friend_id = :id"
+        data = {'id': id}
         result = self.db.query_db(query, data)
         return result
 
