@@ -52,10 +52,10 @@ class Users(Controller):
         user = {'name': name, 'alias': alias, 'email': email, 'password': password, 'password_confirmation': password_cf, 'date_of_birth': date_of_birth}
         result = self.models['User'].add_user(user)
         if result == False:
-            return redirect('/')
+            return redirect('/main')
 
         session['id'] = result
-        return redirect('/success')
+        return redirect('/pokes')
 
     def login(self):
         post = request.form
@@ -65,9 +65,9 @@ class Users(Controller):
 
         result = self.models['User'].login(user)
         if result == False:
-            return redirect('/')
+            return redirect('/main')
         session['id'] = result
-        return redirect('/success')
+        return redirect('/pokes')
 
     def success(self):
         user = {'id': session['id']}
@@ -78,7 +78,7 @@ class Users(Controller):
 
     def logout(self):
         session.pop('id')
-        return redirect('/')
+        return redirect('/main')
 
 
 
