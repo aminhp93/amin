@@ -15,6 +15,6 @@ module.exports = function(app) {
 
     app.post('/comments/:message_id', comments.create);
 
-    app.post('/messages/like/:topic_id', messages.like);
-    app.post('/messages/dislike/:topic_id', messages.dislike);
+    app.post('/messages/like/:message_id', messages.like);
+    app.post('/messages/dislike/:message_id', messages.dislike);
 }

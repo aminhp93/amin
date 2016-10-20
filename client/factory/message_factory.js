@@ -29,18 +29,17 @@ app.factory('messageFactory', function($http) {
             messages = result.data;
             callback(messages);
         })
-
     }
 
-    factory.like = function(topic_id, callback) {
-        $http.post('/messages/like/' + topic_id).then(function(result) {
+    factory.like = function(message_id, callback) {
+        $http.post('/messages/like/' + message_id).then(function(result) {
             messages = result.data;
             callback(messages);
         })
     }
 
-    factory.dislike = function(topic_id, callback) {
-        $http.post('/messages/dislike/' + topic_id).then(function(result) {
+    factory.dislike = function(message_id, callback) {
+        $http.post('/messages/dislike/' + message_id).then(function(result) {
             messages = result.data;
             callback(messages);
         })

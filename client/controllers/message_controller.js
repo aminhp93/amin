@@ -30,11 +30,11 @@ app.controller('messageController', function($scope, messageFactory, $location, 
         $scope.comment = {};
     }
 
-    $scope.like = function() {
-        messageFactory.like($routeParams.id, getMessage);
+    $scope.like = function(message_id) {
+        messageFactory.like(message_id, getMessage);
     }
 
-    $scope.dislike = function() {
-        messageFactory.dislike($routeParams.id, getMessage);
+    $scope.dislike = function(message_id) {
+        messageFactory.dislike(message_id, getMessage);
     }
 })

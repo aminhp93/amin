@@ -9,7 +9,7 @@ app.controller('userController', function($scope, userFactory, $location, $cooki
             $location.url('/dashboard');
         }
     }
-    $scope.regex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,32}'
+    $scope.regex = '^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$';
 
     $scope.createUser = function() {
         userFactory.createUser($scope.user, getUser);

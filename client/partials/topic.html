@@ -1,25 +1,27 @@
 <button><a href="#/">Logout</a></button>
+<h2>Welcome, {{ user }}</h2>
 <form>
+    <input type="text" ng-model="search" placeholder="Search ...">
+</form>
+<form name="myForm">
     <h4>Add a new topic</h4>
-    <li>
+    <div>
         Topic:
-        <input type="text" ng-model="topic.title">
-    </li>
-    <li>
+        <input type="text" ng-model="topic.title" name="topic" required>
+        <span ng-show="myForm.$dirty && myForm.topic.$error.required">Topic is required</span>
+    </div>
+    <div>
         Description:
-        <input type="text" ng-model="topic.description">
-    </li>
-    <li>
-        Category:
-        <select ng-model="topic.category">
-            <option>HTML</option>
-            <option>MySQL</option>
-            <option>Ruby</option>
-            <option>UX</option>
-            <option>Web Development</option>
+        <input type="text" ng-model="topic.description" name="description" required>
+        <span ng-show="myForm.$dirty && myForm.description.$error.required">Description is required</span>
+    </div>
+    <div>
+        <select ng-options="i for i in category" name="category" ng-model="topic.category" required>
+            <option value="" disabled="">Choose Category</option>
         </select>
-    </li>
-    <input type="submit" ng-click="createTopic()">
+        <span ng-show="myForm.$dirty && myForm.category.$error.required">Category is required</span>
+    </div>
+    <input type="submit" ng-click="createTopic()" ng-disabled="myForm.$invalid">
 </form>
 <table>
     <tr>
@@ -28,10 +30,10 @@
         <th>Username</th>
         <th>Post</th>
     </tr>
-    <tr ng-repeat="i in topics">
-        <td>{{ i.category }}</td>
-        <td><a href="#/topics/{{i._id}}">{{ i.title }}</a></td>
-        <td><a href="#/users/{{i._id}}">{{ i._user.name }}</a></td>
-        <td>{{ i._id }}</td>
+    <tr ng-repeat="i in topics | filter:search:strict">
+        <td ng-model="search">{{ i.category }}</td>
+        <td ng-model="search"><a href="#/topics/{{i._id}}">{{ i.title }}</a></td>
+        <td ng-model="search"><a href="#/users/{{i._id}}">{{ i._user.name }}</a></td>
+        <td ng-model="search">{{i._message.length}}</td>
     </tr>
 </table>

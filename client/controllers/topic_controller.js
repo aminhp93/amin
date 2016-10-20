@@ -4,9 +4,10 @@ app.controller('topicController', function($scope, topicFactory, $location, user
     }
 
     topicFactory.getTopic(getTopic);
+    $scope.user = $cookies.get('username');
+    $scope.category = ['HTML', "MySQL", "Ruby", 'UX', 'Web Development'];
 
     $scope.createTopic = function() {
-        console.log($scope);
         $scope.topic['_user'] = $cookies.get('user_id');
         topicFactory.createTopic($scope.topic, getTopic);
         $scope.topic = {};

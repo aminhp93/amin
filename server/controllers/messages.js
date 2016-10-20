@@ -57,32 +57,32 @@ module.exports = {
         })
     },
     like: function(request, response) {
-        Message.findOne({ _topic: request.params.topic_id }, function(err, topic_result) {
+        Message.findOne({ _id: request.params.message_id }, function(err, message) {
             if (err) {
                 console.log(err);
             } else {
-                topic_result.like += 1;
-                topic_result.save(function(err, result) {
+                message.like += 1;
+                message.save(function(err, result) {
                     if (err) {
                         console.log(err);
                     }
                 });
-                response.redirect('/messages/' + request.params.topic_id);
+                response.redirect('/messages/' + message._topic);
             }
         })
     },
     dislike: function(request, response) {
-        Message.findOne({ _topic: request.params.topic_id }, function(err, topic_result) {
+        Message.findOne({ _id: request.params.message_id }, function(err, message) {
             if (err) {
                 console.log(err);
             } else {
-                topic_result.dislike += 1;
-                topic_result.save(function(err, result) {
+                message.dislike += 1;
+                message.save(function(err, result) {
                     if (err) {
                         console.log(err);
                     }
                 });
-                response.redirect('/messages/' + request.params.topic_id);
+                response.redirect('/messages/' + message._topic);
             }
         })
     }
