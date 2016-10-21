@@ -1,20 +1,14 @@
-var users = require('../controllers/users.js');
-var topics = require('../controllers/topics.js');
-var messages = require('../controllers/messages.js');
-var comments = require('../controllers/comments.js');
+var friends = require('../controllers/friends.js')
 
-module.exports = function(app) {
-    app.post('/users', users.create);
+module.exports = function(app){
 
-    app.get('/topics', topics.index);
-    app.get('/topics/:topic_id', topics.get_one_topic);
-    app.post('/topics', topics.create);
-
-    app.get('/messages/:topic_id', messages.index);
-    app.post('/messages/:topic_id', messages.create);
-
-    app.post('/comments/:message_id', comments.create);
-
-    app.post('/messages/like/:message_id', messages.like);
-    app.post('/messages/dislike/:message_id', messages.dislike);
+	app.get('/friends', friends.index);
+	app.get('/friends/:id', function(req, res){
+		console.log(req.body);
+		friends.show(req, res);
+	});
+	app.post('/friends', friends.create);
+	app.put('/friends/:id', friends.update);
+	app.delete('/friends/:id', friends.delete);
+	app.post('/login', friends.login);
 }
