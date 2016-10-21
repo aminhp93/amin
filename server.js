@@ -11,5 +11,5 @@ require('./server/config/mongoose.js');
 require('./server/config/routes.js')(app);
 
 app.listen(3000, function() {
-    console.log('Discussion Board on port 3000');
+    console.log('Exam on port 3000');
 })

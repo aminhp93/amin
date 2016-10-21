@@ -1,20 +1,16 @@
 var users = require('../controllers/users.js');
-var topics = require('../controllers/topics.js');
-var messages = require('../controllers/messages.js');
-var comments = require('../controllers/comments.js');
+var polls = require('../controllers/polls.js');
+var options = require('../controllers/options.js');
 
 module.exports = function(app) {
     app.post('/users', users.create);
 
-    app.get('/topics', topics.index);
-    app.get('/topics/:topic_id', topics.get_one_topic);
-    app.post('/topics', topics.create);
+    app.get('/polls', polls.index);
+    app.get('/polls/:poll_id', polls.get_one_poll);
+    app.post('/polls', polls.create);
+    app.delete('/polls/:id', polls.delete);
 
-    app.get('/messages/:topic_id', messages.index);
-    app.post('/messages/:topic_id', messages.create);
 
-    app.post('/comments/:message_id', comments.create);
+    app.post('/polls/vote/:option_id', options.vote);
 
-    app.post('/messages/like/:message_id', messages.like);
-    app.post('/messages/dislike/:message_id', messages.dislike);
 }

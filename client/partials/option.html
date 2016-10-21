@@ -1,0 +1,16 @@
+<a href="#/dashboard">Go to Polls</a>
+<h1>{{options[0].question}}</h1>
+<table>
+    <tr>
+        <th>Option</th>
+        <td>Count Votes</td>
+        <td>Action</td>
+    </tr>
+    <tr ng-repeat="i in options[0]._option">
+        <td>{{i.content}}</td>
+        <td>{{i.vote}}</td>
+        <td ng-click="vote(i._id)">
+            <button>Vote</button>
+        </td>
+    </tr>
+</table>

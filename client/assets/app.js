@@ -7,16 +7,16 @@ app.config(function($routeProvider) {
             controller: 'userController'
         })
         .when('/dashboard', {
-            templateUrl: 'partials/topic.html',
-            controller: 'topicController'
+            templateUrl: 'partials/poll.html',
+            controller: 'pollController'
         })
-        .when('/topics/:id', {
-            templateUrl: 'partials/messages.html',
-            controller: 'messageController'
+        .when('/create', {
+            templateUrl: 'partials/create.html',
+            controller: 'pollController'
         })
-        .when('/users/:id', {
-            templateUrl: 'partials/user.html',
-            controller: 'messageController'
+        .when('/polls/:id', {
+            templateUrl: 'partials/option.html',
+            controller: 'optionController'
         })
         .otherwise({
             redirectTo: '/'

@@ -1,0 +1,20 @@
+<a href="#/create">Create a new poll</a>
+<a href="#/">Logout</a>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Survey Question</th>
+        <th>Date Posted</th>
+        <td>Action</td>
+    </tr>
+    <tr ng-repeat="i in polls">
+        <td>{{i._user.name}}</td>
+        <td>
+            <a href="#/polls/{{i._id}}">{{i.question}}</a>
+        </td>
+        <td>{{i.createdAt | date: YYYY-dd-mm}}</td>
+        <td ng-click="alo(i._id)" ng-if="user_id === i._user._id">
+            <button>Delete</button>
+        </td>
+    </tr>
+</table>

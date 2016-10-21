@@ -1,0 +1,31 @@
+Put the questions and options here:
+<form name="myForm">
+    <div>Question
+        <input type="text" ng-model="poll.question" name="question" required ng-minlength="8">
+        <span ng-show="myForm.$dirty && myForm.question.$error.required">
+        Question is required</span>
+        <span ng-show="myForm.$dirty && myForm.question.$error.minlength">Question must have at least 8 charactors</span>
+    </div>
+    <div>Option 1
+        <input type="text" ng-model="poll.option1" name="option1" required ng-minlength="3">
+        <span ng-show="myForm.$dirty && myForm.option1.$error.required">Option 1 is required</span>
+        <span ng-show="myForm.$dirty && myForm.option1.$error.minlength">Option 1 must have at least 3 charactors</span>
+    </div>
+    <div>Option 2
+        <input type="text" ng-model="poll.option2" name="option2" required ng-minlength="3">
+        <span ng-show="myForm.$dirty && myForm.option2.$error.required">Option 2 is required</span>
+        <span ng-show="myForm.$dirty && myForm.option2.$error.minlength">Option 2 must have at least 3 charactors</span>
+    </div>
+    <div>Option 3
+        <input type="text" ng-model="poll.option3" name="option3" required ng-minlength="3">
+        <span ng-show="myForm.$dirty && myForm.option3.$error.required">Option 3 is required</span>
+        <span ng-show="myForm.$dirty && myForm.option3.$error.minlength">Option 3 must have at least 3 charactors</span>
+    </div>
+    <div>Option 4
+        <input type="text" ng-model="poll.option4" name="option4" required ng-minlength="3">
+        <span ng-show="myForm.$dirty && myForm.option4.$error.required">Option 4 is required</span>
+        <span ng-show="myForm.$dirty && myForm.option4.$error.minlength">Option 4 must have at least 3 charactors</span>
+    </div>
+    <input type="submit" value="Create Poll" ng-click="createPoll()" ng-disabled="myForm.$invalid">
+</form>
+<a href="#/dashboard">Back</a>

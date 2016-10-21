@@ -9,7 +9,6 @@ app.controller('userController', function($scope, userFactory, $location, $cooki
             $location.url('/dashboard');
         }
     }
-    $scope.regex = /^(?=.*\d).+$/;
 
     $scope.createUser = function() {
         userFactory.createUser($scope.user, getUser);
