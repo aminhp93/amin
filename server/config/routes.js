@@ -1,16 +1,10 @@
 var users = require('../controllers/users.js');
-var polls = require('../controllers/polls.js');
-var options = require('../controllers/options.js');
 
 module.exports = function(app) {
+    app.get('/users', users.index);
+    app.get('/users/:id', users.getOne);
     app.post('/users', users.create);
-
-    app.get('/polls', polls.index);
-    app.get('/polls/:poll_id', polls.get_one_poll);
-    app.post('/polls', polls.create);
-    app.delete('/polls/:id', polls.delete);
-
-
-    app.post('/polls/vote/:option_id', options.vote);
-
+    app.post('/users/position/update', users.updatePosition);
+    app.post('/users/position/delete', users.deletePosition);
+    app.post('/addP/edit/:id', users.editProfile);
 }

@@ -1,24 +1,23 @@
-var app = angular.module('app', ['ngRoute', 'ngCookies']);
+var app = angular.module('app', ['ngRoute', 'ngCookies', 'ezfb', 'ngMap']);
 
-app.config(function($routeProvider) {
+app.config(function($routeProvider, ezfbProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'partials/index.html',
+            controller: 'dashboardController'
+        })
+        .when('/users/:id', {
+            templateUrl: 'partials/user.html',
             controller: 'userController'
-        })
-        .when('/dashboard', {
-            templateUrl: 'partials/poll.html',
-            controller: 'pollController'
-        })
-        .when('/create', {
-            templateUrl: 'partials/create.html',
-            controller: 'pollController'
-        })
-        .when('/polls/:id', {
-            templateUrl: 'partials/option.html',
-            controller: 'optionController'
         })
         .otherwise({
             redirectTo: '/'
         })
+
+    ezfbProvider.setInitParams({
+        appId: '198459453897675',
+
+        version: 'v2.3'
+    });
+
 })
